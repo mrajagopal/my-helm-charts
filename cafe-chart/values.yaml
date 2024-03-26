@@ -80,3 +80,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+ingressClass:
+  ## A class of the Ingress Controller.
+  name: nginx-ingress
+
+number: 0

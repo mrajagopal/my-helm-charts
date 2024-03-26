@@ -3,13 +3,13 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-cafe0-ingress
 spec:
-  ingressClassName: nginx-ingress-0
+  ingressClassName: {{ .Values.ingressClass.name }} 
   tls:
   - hosts:
-    - cafe0.example.com
+    - cafe-{{ .Values.number }}.example.com
     secretName: cafe-secret
   rules:
-  - host: cafe0.example.com
+  - host: cafe-{{ .Values.number }}.example.com
     http:
       paths:
       - path: /tea
