@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: nginx-ingress-pod-monitor
+#  namespace: mr-kic-0  # Ensure this matches the namespace where the pod is running
+  labels:
+    release: prometheus  # Ensure this matches the label of your Prometheus instance
+spec:
+  podMetricsEndpoints:
+    - port: prometheus # Ensure this matches the port name specified in the pod
+      interval: 15s  # Scrape interval
+      path: /metrics  # Endpoint path to scrape
+  namespaceSelector:
+    matchNames:
+#      mr-kic-0  # Namespace where your pod is located
+      - {{ .Namespace.Name }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nginx-ingress  # Ensure this matches the labels on your pod
