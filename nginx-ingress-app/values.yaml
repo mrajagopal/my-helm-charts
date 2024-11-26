@@ -20,9 +20,9 @@ controller:
   ## Support for App Protect WAF
   appprotect:
     ## Enable the App Protect WAF module in the Ingress Controller.
-    enable: false
+    enable: true 
     ## Sets log level for App Protect WAF. Allowed values: fatal, error, warn, info, debug, trace
-    # logLevel: fatal
+    logLevel: fatal
 
   ## Support for App Protect DoS
   appprotectdos:
@@ -68,14 +68,15 @@ controller:
   shareProcessNamespace: false
 
   ## The log level of the Ingress Controller.
-  logLevel: 3
+  logLevel: 1
 
   ## A list of custom ports to expose on the NGINX Ingress Controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
   customPorts: []
 
   image:
     ## The image repository of the Ingress Controller.
-    repository: private-registry.nginx.com/nginx-ic/nginx-plus-ingress #nginx/nginx-ingress
+    #repository: private-registry.nginx.com/nginx-ic/nginx-plus-ingress #nginx/nginx-ingress
+    repository: private-registry.nginx.com/nginx-ic-nap/nginx-plus-ingress
       #repository: nginx-plus-ingress
 
     ## The tag of the Ingress Controller image. If not specified the appVersion from Chart.yaml is used as a tag.
@@ -283,7 +284,7 @@ controller:
   watchSecretNamespace: ""
 
   ## Enable the custom resources.
-  enableCustomResources: true
+  enableCustomResources: true 
 
   ## Enable OIDC policies.
   enableOIDC: false
@@ -322,7 +323,7 @@ controller:
 
   ## Add a location based on the value of health-status-uri to the default server. The location responds with the 200 status code for any request.
   ## Useful for external health-checking of the Ingress Controller.
-  healthStatus: false
+  healthStatus: true 
 
   ## Sets the URI of health status location in the default server. Requires controller.healthStatus.
   healthStatusURI: "/nginx-health"
@@ -335,7 +336,7 @@ controller:
     port: 8080
 
     ## Add IPv4 IP/CIDR blocks to the allow list for NGINX stub_status or the NGINX Plus API. Separate multiple IP/CIDR by commas.
-    allowCidrs: "127.0.0.1"
+    allowCidrs: "127.0.0.1,::1"
 
   service:
     ## Creates a service to expose the Ingress Controller pods.
@@ -441,7 +442,7 @@ controller:
     ingressLink: ""
 
     ## Enable Leader election to avoid multiple replicas of the controller reporting the status of Ingress resources. controller.reportIngressStatus.enable must be set to true.
-    enableLeaderElection: false 
+    enableLeaderElection: true 
 
     ## Specifies the name to be used as the lock for leader election. controller.reportIngressStatus.enableLeaderElection must be set to true.
     #leaderElectionLockName: "nginx-ingress-leader"
@@ -470,7 +471,7 @@ controller:
     initialDelaySeconds: 0
 
   ## Enable collection of latency metrics for upstreams. Requires prometheus.create.
-  enableLatencyMetrics: false
+  enableLatencyMetrics: true 
 
   ## Disable IPV6 listeners explicitly for nodes that do not support the IPV6 stack.
   disableIPV6: false
@@ -487,7 +488,7 @@ controller:
   readOnlyRootFilesystem: false
 
   ## Enable dynamic reloading of certificates
-  enableSSLDynamicReload: true
+  enableSSLDynamicReload: true 
 
   ## Enable telemetry reporting
   enableTelemetryReporting: true
@@ -496,7 +497,7 @@ rbac:
   ## Configures RBAC.
   create: true
 
-prometheus:
+nginxmetrics:
   ## Expose NGINX or NGINX Plus metrics in the Prometheus format.
   create: true
 
@@ -531,7 +532,7 @@ prometheus:
     ## A list of endpoints allowed as part of this ServiceMonitor.
     ## Matches on the name of a Service port.
     endpoints:
-      - port: prometheus
+      - port: prometheus 
 
 serviceInsight:
   ## Expose NGINX Plus Service Insight endpoint.

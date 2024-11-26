@@ -2,8 +2,8 @@
 set -u
 COUNT=${1}
 NAME=${2}
-CHART_VERSION=1.0.2
-NIC_VERSION="3.3.2"
+CHART_VERSION=1.4.1
+NIC_VERSION="3.7.1"
 read -sp 'Please enter JWT Token if using a private container registry: ' JWT_TOKEN
 
 for ((i = 0; i < ${COUNT}; i++)) {
