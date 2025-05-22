@@ -14,15 +14,15 @@ controller:
   ## Deploys the Ingress Controller for NGINX Plus.
   nginxplus: true 
 
-  ## Timeout in milliseconds which the Ingress Controller will wait for a successful NGINX reload after a change or at the initial start.
+  # Timeout in milliseconds which the Ingress Controller will wait for a successful NGINX reload after a change or at the initial start.
   nginxReloadTimeout: 60000
 
   ## Support for App Protect WAF
   appprotect:
     ## Enable the App Protect WAF module in the Ingress Controller.
-    enable: true 
+    enable: false
     ## Sets log level for App Protect WAF. Allowed values: fatal, error, warn, info, debug, trace
-    logLevel: info 
+    # logLevel: fatal
 
   ## Support for App Protect DoS
   appprotectdos:
@@ -64,23 +64,19 @@ controller:
   ## Enables debugging for NGINX. Uses the nginx-debug binary. Requires error-log-level: debug in the ConfigMap via `controller.config.entries`.
   nginxDebug: false
 
-  ## Share process namespace between containers in the Ingress Controller pod.
-  shareProcessNamespace: false
-
   ## The log level of the Ingress Controller.
-  logLevel: info 
+  logLevel: 3
 
   ## A list of custom ports to expose on the NGINX Ingress Controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
   customPorts: []
 
   image:
     ## The image repository of the Ingress Controller.
-    #repository: private-registry.nginx.com/nginx-ic/nginx-plus-ingress #nginx/nginx-ingress
-    repository: private-registry.nginx.com/nginx-ic-nap/nginx-plus-ingress
-      #repository: nginx-plus-ingress
+    repository: private-registry.nginx.com/nginx-ic/nginx-plus-ingress
 
     ## The tag of the Ingress Controller image. If not specified the appVersion from Chart.yaml is used as a tag.
-    tag: "3.2.1"
+    tag: "3.3.2"
+
     ## The digest of the Ingress Controller image.
     ## If digest is specified it has precedence over tag and will be used instead
     # digest: "sha256:CHANGEME"
@@ -103,8 +99,7 @@ controller:
     annotations: {}
 
     ## The entries of the ConfigMap for customizing NGINX configuration.
-    entries:
-      worker-processes: "1"
+    entries: {}
 
   ## It is recommended to use your own TLS certificates and keys
   defaultTLS:
@@ -158,46 +153,15 @@ controller:
     targetCPUUtilizationPercentage: 50
     ## The target memory utilization percentage.
     targetMemoryUtilizationPercentage: 50
-    ## Custom behavior policies
-    behavior: {}
 
   ## The resources of the Ingress Controller pods.
   resources:
     requests:
-      cpu: 0
-      memory: 0
+      cpu: 100m
+      memory: 128Mi
   # limits:
   #   cpu: 1
   #   memory: 1Gi
-
-  ## The security context for the Ingress Controller pods.
-  podSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-
-  ## The security context for the Ingress Controller containers.
-  securityContext: {} # Remove curly brackets before adding values
-    # allowPrivilegeEscalation: true
-    # readOnlyRootFilesystem: true
-    # runAsUser: 101 #nginx
-    # runAsNonRoot: true
-    # capabilities:
-    #   drop:
-    #   - ALL
-    #   add:
-    #   - NET_BIND_SERVICE
-
-  ## The security context for the Ingress Controller init container which is used when readOnlyRootFilesystem is set to true.
-  initContainerSecurityContext: {}
-
-  ## The resources for the Ingress Controller init container which is used when readOnlyRootFilesystem is set to true.
-  initContainerResources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    # limits:
-    #   cpu: 1
-    #   memory: 1Gi
 
   ## The tolerations of the Ingress Controller pods.
   tolerations: []
@@ -257,7 +221,7 @@ controller:
   ## The number of replicas of the Ingress Controller deployment.
   replicaCount: 1
 
-  ## Configures the ingress class the Ingress Controller uses.
+  # Configures the ingress class the Ingress Controller uses.
   ingressClass:
     ## A class of the Ingress Controller.
 
@@ -268,7 +232,7 @@ controller:
     ## The Ingress Controller processes all the resources that do not have the "ingressClassName" field for all versions of kubernetes.
     name: nginx
 
-    ## Creates a new IngressClass object with the name "controller.ingressClass.name". Set to false to use an existing IngressClass with the same name. If you use helm upgrade, do not change the values from the previous release as helm will delete IngressClass objects managed by helm. If you are upgrading from a release earlier than 3.3.0, do not set the value to false.
+    ## Creates a new IngressClass object with the name "controller.ingressClass.name". Set to false to use an existing IngressClass with the same name. If you use helm upgrade, do not change the values from the previous release as helm will delete IngressClass objects managed by helm. If you are upgrading from a release earlier than 3.3.2, do not set the value to false.
     create: true
 
     ## New Ingresses without an ingressClassName field specified will be assigned the class specified in `controller.ingressClass`. Requires "controller.ingressClass.create".
@@ -284,7 +248,10 @@ controller:
   watchSecretNamespace: ""
 
   ## Enable the custom resources.
-  enableCustomResources: true 
+  enableCustomResources: true
+
+  ## Enable preview policies. This parameter is deprecated. To enable OIDC Policies please use controller.enableOIDC instead.
+  enablePreviewPolicies: false
 
   ## Enable OIDC policies.
   enableOIDC: false
@@ -318,25 +285,26 @@ controller:
     #   port: 5353
     #   protocol: TCP
 
+
   ## Enable custom NGINX configuration snippets in Ingress, VirtualServer, VirtualServerRoute and TransportServer resources.
-  enableSnippets: true
+  enableSnippets: false
 
   ## Add a location based on the value of health-status-uri to the default server. The location responds with the 200 status code for any request.
   ## Useful for external health-checking of the Ingress Controller.
-  healthStatus: true 
+  healthStatus: false
 
   ## Sets the URI of health status location in the default server. Requires controller.healthStatus.
   healthStatusURI: "/nginx-health"
 
   nginxStatus:
     ## Enable the NGINX stub_status, or the NGINX Plus API.
-    enable: true 
+    enable: true
 
     ## Set the port where the NGINX stub_status or the NGINX Plus API is exposed.
     port: 8080
 
     ## Add IPv4 IP/CIDR blocks to the allow list for NGINX stub_status or the NGINX Plus API. Separate multiple IP/CIDR by commas.
-    allowCidrs: "127.0.0.1,::1"
+    allowCidrs: "127.0.0.1"
 
   service:
     ## Creates a service to expose the Ingress Controller pods.
@@ -421,7 +389,7 @@ controller:
 
     ## A list of secret names containing docker registry credentials.
     ## Secrets must exist in the same namespace as the helm release.
-    imagePullSecretsNames: []
+    imagePullSecretsNames: [] 
 
   reportIngressStatus:
     ## Updates the address field in the status of Ingress resources with an external address of the Ingress Controller.
@@ -442,10 +410,11 @@ controller:
     ingressLink: ""
 
     ## Enable Leader election to avoid multiple replicas of the controller reporting the status of Ingress resources. controller.reportIngressStatus.enable must be set to true.
-    enableLeaderElection: true 
+    enableLeaderElection: true
 
-    ## Specifies the name to be used as the lock for leader election. controller.reportIngressStatus.enableLeaderElection must be set to true.
-    #leaderElectionLockName: "nginx-ingress-leader"
+    ## Specifies the name of the ConfigMap, within the same namespace as the controller, used as the lock for leader election. controller.reportIngressStatus.enableLeaderElection must be set to true.
+    ## Autogenerated if not set or set to "".
+    # leaderElectionLockName: "nginx-ingress-leader-election"
 
     ## The annotations of the leader election configmap.
     annotations: {}
@@ -471,33 +440,19 @@ controller:
     initialDelaySeconds: 0
 
   ## Enable collection of latency metrics for upstreams. Requires prometheus.create.
-  enableLatencyMetrics: true 
+  enableLatencyMetrics: false
 
   ## Disable IPV6 listeners explicitly for nodes that do not support the IPV6 stack.
   disableIPV6: false
 
-  ## Sets the port for the HTTP `default_server` listener.
-  defaultHTTPListenerPort: 80
-
-  ## Sets the port for the HTTPS `default_server` listener.
-  defaultHTTPSListenerPort: 443
-
   ## Configure root filesystem as read-only and add volumes for temporary data.
-  ## Three major releases after 3.5.x this argument will be moved to the `securityContext` section.
-  ## This value will not be used if `controller.securityContext` is set
   readOnlyRootFilesystem: false
-
-  ## Enable dynamic reloading of certificates
-  enableSSLDynamicReload: true 
-
-  ## Enable telemetry reporting
-  enableTelemetryReporting: true
 
 rbac:
   ## Configures RBAC.
   create: true
 
-nginxmetrics:
+prometheus:
   ## Expose NGINX or NGINX Plus metrics in the Prometheus format.
   create: true
 
@@ -532,7 +487,7 @@ nginxmetrics:
     ## A list of endpoints allowed as part of this ServiceMonitor.
     ## Matches on the name of a Service port.
     endpoints:
-      - port: prometheus 
+     - port: prometheus
 
 serviceInsight:
   ## Expose NGINX Plus Service Insight endpoint.
@@ -554,46 +509,3 @@ nginxServiceMesh:
   ## Enables NGINX Service Mesh workload to route egress traffic through the Ingress Controller.
   ## Requires nginxServiceMesh.enable
   enableEgress: false
-
-nginxAgent:
-  ## Enables NGINX Agent.
-  enable: true 
-  features:
-   - registration
-   - nginx-counting
-   - metrics
-   - metrics-sender
-   - dataplane-status
-  ## If nginxAgent.instanceGroup is not set the value of nginx-ingress.controller.fullname will be used
-  instanceGroup: ""
-  logLevel: "debug"
-  ## Syslog listener which NGINX Agent uses to accept messages from App Protect WAF
-  syslog:
-    host: "127.0.0.1"
-    port: 1514
-  napMonitoring:
-    collectorBufferSize: 50000
-    processorBufferSize: 50000
- # tls options
-  tls:
-    # enable tls in the nginx-agent setup for grpcs
-    # default to enable to connect with secure connection but without client cert for mtls
-    enable: false
-    # controls whether the server certificate chain and host name are verified.
-    # for production use, see instructions for configuring TLS
-    skip_verify: true
-
-  instanceManager:
-    # FQDN or IP for connecting to NGINX Instance Manager, e.g. nim.example.com
-    host: "10.146.191.73"
-    grpcPort: 443
-    sni: ""
-    tls:
-      enabled: false 
-      skipVerify: true 
-      ## kubernetes.io/tls secret with a TLS certificate and key for using mTLS between NGINX Agent and Instance Manager
-      secret: ""
-      ## nginx.org/ca secret for verification of Instance Manager TLS
-      caSecret: ""
-  ## The name of a custom ConfigMap to use instead of the one provided by default
-  customConfigMap: ""

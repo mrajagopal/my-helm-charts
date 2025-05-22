@@ -21,8 +21,17 @@ controller:
   appprotect:
     ## Enable the App Protect WAF module in the Ingress Controller.
     enable: true 
+    v5: true
     ## Sets log level for App Protect WAF. Allowed values: fatal, error, warn, info, debug, trace
-    logLevel: info 
+    logLevel: fatal
+    volumes:
+    - name: app-protect-bundles 
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+    - name: app-protect-bd-config
+      emptyDir: {}
+    - name: app-protect-config
+      emptyDir: {}
 
   ## Support for App Protect DoS
   appprotectdos:
@@ -68,7 +77,7 @@ controller:
   shareProcessNamespace: false
 
   ## The log level of the Ingress Controller.
-  logLevel: info 
+  logLevel: 1
 
   ## A list of custom ports to expose on the NGINX Ingress Controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
   customPorts: []
@@ -80,7 +89,7 @@ controller:
       #repository: nginx-plus-ingress
 
     ## The tag of the Ingress Controller image. If not specified the appVersion from Chart.yaml is used as a tag.
-    tag: "3.2.1"
+    tag: "3.6.2"
     ## The digest of the Ingress Controller image.
     ## If digest is specified it has precedence over tag and will be used instead
     # digest: "sha256:CHANGEME"
@@ -213,17 +222,23 @@ controller:
   # - name: MY_VAR
   #   value: myvalue
 
-  ## The volumes of the Ingress Controller pods.
-  volumes: []
-  # - name: extra-conf
-  #   configMap:
-  #     name: extra-conf
-
   ## The volumeMounts of the Ingress Controller pods.
-  volumeMounts: []
+  # volumeMounts: []
   # - name: extra-conf
   #   mountPath: /etc/nginx/conf.d/extra.conf
   #   subPath: extra.conf
+
+    #  # The volumes of the Ingress Controller pods.
+    #  volumes:
+    #  - name: task-pv-volume 
+    #  persistentVolumeClaim:
+    #     claimName: task-pv-claim
+    #  
+    # The volumeMounts of the Ingress Controller pods.
+    #  volumeMounts:
+    #  - name: waf-policy-volume 
+    #    mountPath: /etc/app_protect/bundles
+
 
   ## InitContainers for the Ingress Controller pods.
   initContainers: []
@@ -330,7 +345,7 @@ controller:
 
   nginxStatus:
     ## Enable the NGINX stub_status, or the NGINX Plus API.
-    enable: true 
+    enable: true
 
     ## Set the port where the NGINX stub_status or the NGINX Plus API is exposed.
     port: 8080
@@ -555,45 +570,3 @@ nginxServiceMesh:
   ## Requires nginxServiceMesh.enable
   enableEgress: false
 
-nginxAgent:
-  ## Enables NGINX Agent.
-  enable: true 
-  features:
-   - registration
-   - nginx-counting
-   - metrics
-   - metrics-sender
-   - dataplane-status
-  ## If nginxAgent.instanceGroup is not set the value of nginx-ingress.controller.fullname will be used
-  instanceGroup: ""
-  logLevel: "debug"
-  ## Syslog listener which NGINX Agent uses to accept messages from App Protect WAF
-  syslog:
-    host: "127.0.0.1"
-    port: 1514
-  napMonitoring:
-    collectorBufferSize: 50000
-    processorBufferSize: 50000
- # tls options
-  tls:
-    # enable tls in the nginx-agent setup for grpcs
-    # default to enable to connect with secure connection but without client cert for mtls
-    enable: false
-    # controls whether the server certificate chain and host name are verified.
-    # for production use, see instructions for configuring TLS
-    skip_verify: true
-
-  instanceManager:
-    # FQDN or IP for connecting to NGINX Instance Manager, e.g. nim.example.com
-    host: "10.146.191.73"
-    grpcPort: 443
-    sni: ""
-    tls:
-      enabled: false 
-      skipVerify: true 
-      ## kubernetes.io/tls secret with a TLS certificate and key for using mTLS between NGINX Agent and Instance Manager
-      secret: ""
-      ## nginx.org/ca secret for verification of Instance Manager TLS
-      caSecret: ""
-  ## The name of a custom ConfigMap to use instead of the one provided by default
-  customConfigMap: ""
