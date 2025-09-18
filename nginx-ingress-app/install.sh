@@ -1,5 +1,11 @@
 #!/bin/bash
 set -u
+
+if ! command -v helm >/dev/null 2>&1; then
+	echo "Error: 'helm' is not installed or not in PATH. Please install Helm before running this script."
+	exit 1
+fi
+
 COUNT=${1}
 NAME=${2}
 CHART_VERSION=1.0.2
