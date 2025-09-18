@@ -6,6 +6,9 @@ if ! command -v helm >/dev/null 2>&1; then
 	exit 1
 fi
 
+# Install PodMonitor CRD for NIC Pod Monitoring
+kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.85.0/stripped-down-crds.yaml
+
 COUNT=${1}
 NAME=${2}
 CHART_VERSION=2.1.0
