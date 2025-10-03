@@ -1,14 +1,2 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: task-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: ""
-  capacity:
-    storage: 500Mi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
+# PersistentVolume is not needed when using dynamic provisioning with nfs-client storage class
+# The storage class will automatically create the PV when the PVC is created

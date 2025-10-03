@@ -3,12 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: task-pv-claim
 spec:
-  storageClassName: ""
+  storageClassName: "nfs-client"
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 500Mi
-  selector:
-    matchLabels:
-      type: local

@@ -11,7 +11,7 @@ kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/rele
 
 # Create PersistentVolume and PersistentVolumeClaim for App Protect WAF bundles
 echo "Creating PersistentVolume and PersistentVolumeClaim for App Protect WAF..."
-kubectl apply -f ./app-protect-pv.yaml
+# kubectl apply -f ./app-protect-pv.yaml
 
 COUNT=${1}
 NAME=${2}
