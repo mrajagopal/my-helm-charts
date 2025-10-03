@@ -28,7 +28,7 @@ for ((i = 0; i < ${COUNT}; i++)) {
 	kubectl create ns ${NAMESPACE}
 	
 	# Create the PVC in the namespace for App Protect WAF bundles
-	kubectl apply -f ./app-protect-pv.yaml -n ${NAMESPACE}
+	kubectl apply -f ./app-protect-pvc.yaml -n ${NAMESPACE}
 	
 	kubectl create secret docker-registry regcred --docker-server=private-registry.nginx.com --docker-username=$JWT_TOKEN --docker-password=none -n ${NAMESPACE}
 	kubectl create secret generic license-token --from-literal=license.jwt=$JWT_LICENSE --type=nginx.com/license -n ${NAMESPACE}
