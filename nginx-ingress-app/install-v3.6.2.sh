@@ -4,7 +4,7 @@ COUNT=${1}
 NAME=${2}
 CHART_VERSION=1.3.2
 NIC_VERSION="3.6.2"
-VALUES_FILE="./values-wafv5.yaml"
+VALUES_FILE="./values-v3.3.2.yaml"
 read -sp 'Please enter JWT Token if using a private container registry: ' JWT_TOKEN
 
 for ((i = 0; i < ${COUNT}; i++)) {

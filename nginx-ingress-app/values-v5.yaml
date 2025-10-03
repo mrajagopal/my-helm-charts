@@ -27,7 +27,7 @@ controller:
     ## Enable the App Protect WAF module in the Ingress Controller.
     enable: true 
     ## Sets log level for App Protect WAF. Allowed values: fatal, error, warn, info, debug, trace
-    logLevel: info 
+    logLevel: info
 
   ## Support for App Protect DoS
   appprotectdos:
@@ -336,7 +336,7 @@ controller:
 
   nginxStatus:
     ## Enable the NGINX stub_status, or the NGINX Plus API.
-    enable: true 
+    enable: true
 
     ## Set the port where the NGINX stub_status or the NGINX Plus API is exposed.
     port: 8080
