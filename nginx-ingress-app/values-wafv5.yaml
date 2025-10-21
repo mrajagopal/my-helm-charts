@@ -119,7 +119,7 @@ controller:
   dnsPolicy: ClusterFirst
 
   ## Enables debugging for NGINX. Uses the nginx-debug binary. Requires error-log-level: debug in the ConfigMap via `controller.config.entries`.
-  nginxDebug: true 
+  nginxDebug: false 
 
   ## Share process namespace between containers in the Ingress Controller pod.
   shareProcessNamespace: false
@@ -133,7 +133,7 @@ controller:
   image:
     ## The image repository of the Ingress Controller.
     #repository: private-registry.nginx.com/nginx-ic/nginx-plus-ingress #nginx/nginx-ingress
-    repository: private-registry.nginx.com/nginx-ic-nap/nginx-plus-ingress
+    repository: private-registry.nginx.com/nginx-ic-nap-v5/nginx-plus-ingress
       #repository: nginx-plus-ingress
 
     ## The tag of the Ingress Controller image. If not specified the appVersion from Chart.yaml is used as a tag.
@@ -647,14 +647,13 @@ nginxAgent:
   enable: true 
   dataplanekey: "6keImQb8wyjMujKe6MTC075RAS12DcgZmSjUEGA3v4o="
   features:
-   - registration
    - nginx-counting
-   - metrics
    - metrics-sender
+   - registration
    - dataplane-status
   ## If nginxAgent.instanceGroup is not set the value of nginx-ingress.controller.fullname will be used
   instanceGroup: ""
-  logLevel: "debug"
+  logLevel: "info"
   ## Syslog listener which NGINX Agent uses to accept messages from App Protect WAF
   syslog:
     host: "127.0.0.1"
@@ -673,7 +672,7 @@ nginxAgent:
 
   instanceManager:
     # FQDN or IP for connecting to NGINX Instance Manager, e.g. nim.example.com
-    host: "10.146.191.73"
+    host: "10.146.191.173"
     grpcPort: 443
     sni: ""
     tls:

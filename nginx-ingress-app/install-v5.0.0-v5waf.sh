@@ -32,7 +32,6 @@ for ((i = 0; i < ${COUNT}; i++)) {
 	
 	kubectl create secret docker-registry regcred --docker-server=private-registry.nginx.com --docker-username=$JWT_TOKEN --docker-password=none -n ${NAMESPACE}
 	kubectl create secret generic license-token --from-literal=license.jwt=$JWT_LICENSE --type=nginx.com/license -n ${NAMESPACE}
-#	helm install ${HELM_INSTALL_NAME} oci://ghcr.io/nginxinc/charts/nginx-ingress --version ${CHART_VERSION}  -f ./values.yaml --namespace ${NAMESPACE} --create-namespace --set controller.ingressClass.name="${INGRESS_CLASS_NAME}" --set controller.image.tag=${NIC_VERSION}
 	helm install ${HELM_INSTALL_NAME} oci://ghcr.io/nginx/charts/nginx-ingress --version ${CHART_VERSION}  -f ./values-wafv5.yaml --namespace ${NAMESPACE} --create-namespace --set controller.ingressClass.name="${INGRESS_CLASS_NAME}" --set controller.image.tag=${TAG}
          helm install nic-podmon-${NAMESPACE} nic-podmon --namespace ${NAMESPACE}
 }

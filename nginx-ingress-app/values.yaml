@@ -561,7 +561,6 @@ nginxAgent:
   features:
    - registration
    - nginx-counting
-   - metrics
    - metrics-sender
    - dataplane-status
   ## If nginxAgent.instanceGroup is not set the value of nginx-ingress.controller.fullname will be used
@@ -585,7 +584,7 @@ nginxAgent:
 
   instanceManager:
     # FQDN or IP for connecting to NGINX Instance Manager, e.g. nim.example.com
-    host: "10.146.191.73"
+    host: "10.146.191.173"
     grpcPort: 443
     sni: ""
     tls:
